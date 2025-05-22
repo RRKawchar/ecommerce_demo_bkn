@@ -7,8 +7,7 @@ const con = mysql.createConnection({
   port:process.env.DB_PORT,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-});
-
+})
 
 con.connect((err) => {
   if (err) throw err;
