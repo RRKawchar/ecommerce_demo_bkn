@@ -73,7 +73,7 @@ const createProductTable = `
   `;
 
 
-pool.query(createCategoryTable, (err, results) => {
+pool.query(createProductTable, (err, results) => {
   if (err) {
     console.error('Error creating table:', err);
   } else {

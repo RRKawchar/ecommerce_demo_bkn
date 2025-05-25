@@ -4,12 +4,14 @@ const app=express();
 const db=require('./config/db');
 const customerRoutes=require('./routes/customer.routes');
 const categoryRoutes=require('./routes/categoryRoutes');
+const productRoutes=require('./routes/productRoutes');
 
 
 app.use(express.json());
 
 app.use('/api/v1',customerRoutes);
-app.use('/api/v1',categoryRoutes)
+app.use('/api/v1',categoryRoutes);
+app.use('/api/v1',productRoutes);
 
 
 
