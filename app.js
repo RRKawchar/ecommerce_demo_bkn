@@ -1,17 +1,20 @@
 const express = require('express');
 require('dotenv').config();
 const app=express();
-// const categoryRoutes=require('./routes/category.routes');
+const db=require('./config/db');
 const customerRoutes=require('./routes/customer.routes');
-const port=3000;
+const categoryRoutes=require('./routes/categoryRoutes');
+
 
 app.use(express.json());
-// app.use('/api/v1',categoryRoutes);
+
 app.use('/api/v1',customerRoutes);
+app.use('/api/v1',categoryRoutes)
 
 
 
 
-app.listen(port,()=>{
-    console.log(`server is running on localhost:${port}`);
+app.listen(process.env.PORT,()=>{
+    console.log(`server is running on localhost:${process.env.PORT}`);
+    console.log(`http://localhost:${process.env.PORT}/api/v1`);
 })
