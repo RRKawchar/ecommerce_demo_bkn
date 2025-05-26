@@ -24,6 +24,19 @@ const createProductTable = `
     );
   `;
 
+
+  const createProeductImage=`
+  CREATE TABLE IF NOT EXISTS product_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  image_path VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+)`;
+
+
+
   const createCartItemsTable = `
     CREATE TABLE IF NOT EXISTS cart_items (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,7 +86,7 @@ const createProductTable = `
   `;
 
 
-pool.query(createProductTable, (err, results) => {
+pool.query(createProeductImage, (err, results) => {
   if (err) {
     console.error('Error creating table:', err);
   } else {
