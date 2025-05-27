@@ -1,10 +1,6 @@
-const multer = require('multer');
-const fs = require('fs-extra');
-const path = require('path');
 const productModel = require('../models/productModel');
 const {uploadMultiple}=require('../config/upload');
 require('dotenv').config();
-const BASE_URL = process.env.BASE_URL;
 
 exports.createProduct = (req, res) => {
   uploadMultiple(req, res, function (err) {
@@ -226,6 +222,37 @@ exports.updateProduct = (req, res) => {
         }
 
         res.status(200).json({ message: 'Product and images updated successfully' });
+      });
+    });
+  });
+};
+
+
+
+
+exports.deleteProductById = (req, res) => {
+  const productId = req.query.id;
+
+  if (!productId) {
+    return res.status(400).json({ message: 'Product ID is required in the URL' });
+  }
+
+  // Step 1: Delete images first
+  productModel.deleteImagesByProductId(productId, (deleteImagesErr) => {
+    if (deleteImagesErr) {
+      console.error('Image delete error:', deleteImagesErr);
+      return res.status(500).json({ message: 'Failed to delete product images' });
+    }
+
+    // Step 2: Then delete product
+    productModel.deleteProductById(productId, (deleteProductErr, result) => {
+      if (deleteProductErr) {
+        console.error('Product delete error:', deleteProductErr);
+        return res.status(500).json({ message: 'Failed to delete product' });
+      }
+
+      res.status(200).json({
+        message: "Product and associated images deleted successfully"
       });
     });
   });

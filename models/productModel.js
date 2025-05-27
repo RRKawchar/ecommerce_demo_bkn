@@ -82,6 +82,13 @@ deleteImagesByProductId: (product_id, callback) => {
   db.query(sql, [product_id], callback);
 },
 
+
+deleteProductById:(product_id,callBack)=>{
+  const deleteSql=`DELETE FROM products WHERE id = ? `;
+  db.query(deleteSql,[product_id],callBack);
+},
+
+
 };
 
 
