@@ -98,36 +98,128 @@ exports.getAllProducts = (req, res) => {
 
 
 exports.productByName = (req, res) => {
+    const searchTerm=req.query.query;
+  productModel.searchByName(searchTerm,(err,results)=>{
+       if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal server error' });
+    }  
 
-    const productName = req.query.name;
+    const productsMap = {};
 
-    if (!productName) {
-        return res.status(409).send({
-            message: "Name is required!"
+    results.forEach(row => {
+      const pid = row.product_id;
+      if (!productsMap[pid]) {
+        productsMap[pid] = {
+          id: pid,
+          name: row.name,
+          description: row.description,
+          price: row.price,
+          stock_quantity: row.stock_quantity,
+          category_id: row.category_id,
+          images: []
+        };
+      }
+
+      if (row.image_id) {
+        productsMap[pid].images.push({
+          id: row.image_id,
+          product_id: pid,
+          image_path: `${req.protocol}://${req.get('host')}/${row.image_path.replace(/\\/g, '/')}`
         });
-    }
+      }
+    });
 
-    productModel.searchByName(productName, (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({
-                statusCode: 500,
-                message: "Internal server error"
-            });
-        }
+    const productList = Object.values(productsMap);
 
-        if (result.length == 0) {
-            return res.status(404).send({
-                statusCode: 404,
-                message: "Data not found"
-            });
-        }
+    res.json({ data: productList });
 
-        return res.status(200).send({
-            statusCode: 200,
-            data: result
+  });
+  
+};
+
+
+
+exports.productByCategoryId=(req,res)=>{
+   const categoryId=req.query.categoryId;
+
+   productModel.searchByCategoryId(categoryId,(err, results)=>{
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal server error' });
+    } 
+
+    const productsMap={};
+
+    results.forEach(item=>{
+
+       const pid=item.product_id;
+       if(!productsMap[pid]){
+       productsMap[pid]={
+        id:pid,
+        name:item.name,
+        category_id:item.category_id,
+        description:item.description,
+        price:item.price,
+        stock_quantity:item.stock_quantity,
+        images:[]
+       }
+       }
+
+       if(item.image_id){
+        productsMap[pid].images.push({
+         id:item.image_id,
+         product_id:pid,
+         image_path: `${req.protocol}://${req.get('host')}/${item.image_path.replace(/\\/g, '/')}`
         });
+       }
 
     });
 
+
+    const productList=Object.values(productsMap);
+    res.json({
+      data:productList
+    })
+
+   });
+};
+
+
+exports.updateProduct = (req, res) => {
+  const product_id = req.params.id;
+  const {name, description, price, stock_quantity } = req.body;
+  const imageFiles = req.files;
+  const imagePaths = imageFiles?.map(file => file.path.replace(/\\/g, '/')) || [];
+
+  // 1. Update product fields
+  productModel.update(product_id, name, description, price, stock_quantity, (err, result) => {
+    if (err) {
+      console.error('Update error:', err);
+      return res.status(500).json({ message: 'Failed to update product' });
+    }
+
+    // 2. If no image changes, stop here
+    if (imagePaths.length === 0) {
+      return res.status(200).json({ message: 'Product updated successfully' });
+    }
+
+    // 3. Remove old images
+    productModel.deleteImagesByProductId(product_id, (deleteErr) => {
+      if (deleteErr) {
+        console.error('Image delete error:', deleteErr);
+        return res.status(500).json({ message: 'Product updated but failed to delete old images' });
+      }
+
+      // 4. Add new images
+      productModel.addImage(product_id, imagePaths, (addErr) => {
+        if (addErr) {
+          console.error('Image insert error:', addErr);
+          return res.status(500).json({ message: 'Product updated but failed to add new images' });
+        }
+
+        res.status(200).json({ message: 'Product and images updated successfully' });
+      });
+    });
+  });
 };

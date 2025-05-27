@@ -18,7 +18,6 @@ const createProductTable = `
       description TEXT,
       price DECIMAL(10,2) NOT NULL,
       stock_quantity INT NOT NULL,
-      image_url VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (category_id) REFERENCES categories(id)
     );
