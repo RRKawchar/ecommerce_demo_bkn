@@ -73,7 +73,7 @@ searchByCategoryId:(category_id,callBack)=>{
 
 
 update:(product_id,name,description,price,stock_quantity,callBack)=>{
-   const updateSql=`UPDATE products SET name=?,description=?price=?,stock_quantity=? WHERE id=?`;
+   const updateSql=`UPDATE products SET name=?,description=?,price=?,stock_quantity=? WHERE id=?`;
   db.query(updateSql,[product_id,name,description,price,stock_quantity],callBack);
 },
 
@@ -81,10 +81,6 @@ deleteImagesByProductId: (product_id, callback) => {
   const sql = `DELETE FROM product_images WHERE product_id = ?`;
   db.query(sql, [product_id], callback);
 },
-
-
-
-
 
 };
 

@@ -186,32 +186,39 @@ exports.productByCategoryId=(req,res)=>{
 };
 
 
+
 exports.updateProduct = (req, res) => {
-  const product_id = req.params.id;
-  const {name, description, price, stock_quantity } = req.body;
+  const product_id = req.query.id;
+
+  if (!product_id) {
+    return res.status(400).json({ message: 'Product ID is required in the URL' });
+  }
+
+  const { name, description, price, stock_quantity } = req.body;
+
+  if (!name || !price || !stock_quantity) {
+    return res.status(400).json({ message: 'Required fields: name, price, stock_quantity' });
+  }
+
   const imageFiles = req.files;
   const imagePaths = imageFiles?.map(file => file.path.replace(/\\/g, '/')) || [];
 
-  // 1. Update product fields
-  productModel.update(product_id, name, description, price, stock_quantity, (err, result) => {
+  productModel.update(name, description, price, stock_quantity, product_id,(err, result) => {
     if (err) {
       console.error('Update error:', err);
       return res.status(500).json({ message: 'Failed to update product' });
     }
 
-    // 2. If no image changes, stop here
     if (imagePaths.length === 0) {
       return res.status(200).json({ message: 'Product updated successfully' });
     }
 
-    // 3. Remove old images
     productModel.deleteImagesByProductId(product_id, (deleteErr) => {
       if (deleteErr) {
         console.error('Image delete error:', deleteErr);
         return res.status(500).json({ message: 'Product updated but failed to delete old images' });
       }
 
-      // 4. Add new images
       productModel.addImage(product_id, imagePaths, (addErr) => {
         if (addErr) {
           console.error('Image insert error:', addErr);
