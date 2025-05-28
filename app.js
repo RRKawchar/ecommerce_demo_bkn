@@ -15,6 +15,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const customerRoutes = require('./routes/customer.routes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
+const cartRotues=require('./routes/cartRoutes');
 
 
 app.use(express.json());
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/api/v1', customerRoutes);
 app.use('/api/v1', categoryRoutes);
 app.use('/api/v1', productRoutes);
+app.use('/api/v1', cartRotues);
 
 
 app.listen(process.env.PORT, () => {

@@ -43,7 +43,7 @@ const createProductTable = `
       product_id INT,
       quantity INT NOT NULL,
       added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (customer_id) REFERENCES customers(id),
+      FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
       FOREIGN KEY (product_id) REFERENCES products(id)
     );
   `;
@@ -85,7 +85,7 @@ const createProductTable = `
   `;
 
 
-pool.query(createProeductImage, (err, results) => {
+pool.query(createCartItemsTable, (err, results) => {
   if (err) {
     console.error('Error creating table:', err);
   } else {

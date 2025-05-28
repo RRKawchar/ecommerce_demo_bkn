@@ -1,5 +1,4 @@
 const productModel = require('../models/productModel');
-const {uploadMultiple}=require('../config/upload');
 require('dotenv').config();
 
 exports.createProduct = (req, res) => {
