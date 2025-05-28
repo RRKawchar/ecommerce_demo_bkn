@@ -4,7 +4,7 @@ const controller=require('../controlles/productController');
  const { uploadMultiple } = require('../config/upload');
 
 
-router.post('/products',controller.createProduct);
+router.post('/products', uploadMultiple,controller.createProduct);
 router.get('/products',controller.getAllProducts);
 router.get('/productByName',controller.productByName);
 router.get('/productByCategoryId',controller.productByCategoryId);

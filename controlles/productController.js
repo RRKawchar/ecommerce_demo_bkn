@@ -3,12 +3,6 @@ const {uploadMultiple}=require('../config/upload');
 require('dotenv').config();
 
 exports.createProduct = (req, res) => {
-  uploadMultiple(req, res, function (err) {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'File upload error' });
-    }
-
     const { category_id, name, description, price, stock_quantity } = req.body;
 
     if (!category_id || !name || !price || !stock_quantity) {
@@ -47,7 +41,7 @@ exports.createProduct = (req, res) => {
         });
       });
     });
-  });
+
 };
 
 
