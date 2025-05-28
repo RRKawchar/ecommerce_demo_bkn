@@ -55,7 +55,7 @@ const createProductTable = `
       total_amount DECIMAL(10,2) NOT NULL,
       status ENUM('pending', 'paid', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (customer_id) REFERENCES customers(id)
+      FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
     );
   `;
 
@@ -69,6 +69,25 @@ const createProductTable = `
       FOREIGN KEY (order_id) REFERENCES orders(id),
       FOREIGN KEY (product_id) REFERENCES products(id)
     );
+  `;
+
+  const createShippingTable=`
+  CREATE TABLE IF NOT EXISTS shipping_details (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT,
+  recipient_name VARCHAR(100),
+  phone VARCHAR(20),
+  email VARCHAR(255),
+  address_line1 VARCHAR(255),
+  address_line2 VARCHAR(255),
+  city VARCHAR(100),
+  postal_code VARCHAR(20),
+  country VARCHAR(100),
+  shipping_method ENUM('standard', 'express', 'pickup') DEFAULT 'standard',
+  shipped_at TIMESTAMP NULL,
+  delivered_at TIMESTAMP NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+)
   `;
 
   const createPaymentsTable = `
@@ -85,7 +104,15 @@ const createProductTable = `
   `;
 
 
-pool.query(createCartItemsTable, (err, results) => {
+  const modyFyTable=`
+   ALTER TABLE shipping_details
+  ADD COLUMN email VARCHAR(255) AFTER phone;
+  `;
+
+
+  
+
+pool.query(modyFyTable, (err, results) => {
   if (err) {
     console.error('Error creating table:', err);
   } else {

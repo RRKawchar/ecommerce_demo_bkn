@@ -16,6 +16,7 @@ const customerRoutes = require('./routes/customer.routes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cartRotues=require('./routes/cartRoutes');
+const orderRoutes=require('./routes/orderRoutes');
 
 
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use('/api/v1', customerRoutes);
 app.use('/api/v1', categoryRoutes);
 app.use('/api/v1', productRoutes);
 app.use('/api/v1', cartRotues);
+app.use('/api/v1', orderRoutes);
 
 
 app.listen(process.env.PORT, () => {
