@@ -86,3 +86,58 @@ exports.getAllOrder = (req, res) => {
   });
 
 };
+
+
+
+exports.orderByCustomer=(req,res)=>{
+  const customerId=req.query.customer_id;
+  if(!customerId){
+     return res.status(400).json({ message: "Customer id not found"});
+  }
+ 
+  orderModel.orderByUser(customerId,(err,result)=>{
+      if (err) return res.status(500).json({ message: "Order getting failed", error: err });
+
+      const orderData={};
+
+      result.forEach((element)=>{
+        if (!orderData[element.orderId]) {
+          orderData[element.orderId] = {
+            orderId: element.orderId,
+            customerId: element.customer_id,
+            customerName: element.customerName,
+            totalAmount: element.total_amount,
+            status: element.status,
+            createAt: element.created_at,
+            items: [],
+            shipping: {
+              recipientName: element.recipient_name,
+              phone: element.phone,
+              email: element.email,
+              address_line1: element.address_line1,
+              address_line2: element.address_line2,
+              city: element.city,
+              country: element.country,
+              postalCode: element.postal_code,
+              shipping_method: element.shipping_method,
+            }
+          };
+        }
+
+          orderData[element.orderId].items.push({
+          product_id: element.product_id,
+          productName: element.productName,
+          productDescription: element.productDescription,
+          quantity: element.quantity,
+          price: element.price
+        });
+
+      });
+
+       const allOrders = Object.values(orderData);
+       res.json(allOrders);
+
+  });
+
+
+};
