@@ -112,7 +112,7 @@ const createProductTable = `
 
   
 
-pool.query(modyFyTable, (err, results) => {
+pool.query(createPaymentsTable, (err, results) => {
   if (err) {
     console.error('Error creating table:', err);
   } else {

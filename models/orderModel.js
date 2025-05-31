@@ -91,7 +91,43 @@ const orderModel={
 
       db.query(sql,[customer_id],callBack);
 
-   }
+   },
+
+
+   updateOrder:(orderId,status,callBack)=>{
+       const sql = `
+         UPDATE orders SET status = ? WHERE id=?
+       `;
+       db.query(sql,[orderId,status],callBack);
+   },
+  
+   // order_id, recipient_name, phone, email, address_line1, address_line2, city, postal_code, country, shipping_method
+
+    updateShipping:(
+      order_id,recipient_name, phone,
+       email, address_line1, address_line2, 
+       city, postal_code, country, shipping_method,
+       callBack
+      )=>{
+        
+      const sql=`UPDATE shipping_details SET 
+              recipient_name=?,
+               phone=?,
+               email=?,
+               address_line1=?,
+               address_line2=?,
+               city=?,
+               postal_code=?,
+               country=?,
+               shipping_method=?
+               WHERE order_id=?
+      `;
+
+
+      db.query(sql,[order_id,recipient_name, phone,
+       email, address_line1, address_line2, 
+       city, postal_code, country, shipping_method],callBack);  
+      }
 
 };
 
